@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Severity Predictor</title>
+</head>
+<body>
+    <h1>Severity Predictor</h1>
+    <form id="predictor-form">
+        <label for="short_description">Short Description:</label>
+        <input type="text" id="short_description" name="short_description"><br><br>
+        <label for="cwe">CWE:</label>
+        <input type="text" id="cwe" name="cwe" placeholder="CWE-89"><br><br>
+        <label for="vector">Vector:</label>
+        <input type="text" id="vector" name="vector"><br><br>
+        <button type="button" onclick="submitForm()">Predict Severity</button>
+    </form>
+    <p id="prediction-result"></p>
+
+    <script>
+        function submitForm() {
+            const shortDescription = document.getElementById('short_description').value;
+            const cwe = document.getElementById('cwe').value;
+            const vector = document.getElementById('vector').value;
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    short_description: shortDescription,
+                    cwe: cwe,
+                    vector: vector
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('prediction-result').innerText = 'Prediction: ' + data.prediction;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

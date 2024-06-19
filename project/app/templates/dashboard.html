@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Data Dashboard</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <style>
+        .navbar {
+            z-index: 1000; /* Increased z-index */
+            border: 2px solid green;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Added box-shadow */
+        }
+        .container {
+            padding-top: 20px; /* Added padding to create space between navbar and content */
+        }
+        .search-area {
+            width: 200px;
+            border: 2px solid blue;
+            position: sticky;
+            top: 20px; 
+            z-index: 999; 
+            background-color: #ffffff; 
+            padding: 10px; 
+        }
+        .plot-area {
+            margin-top: 20px;
+            width: calc(100% - 4px); 
+            overflow-y: auto;
+            border: 2px solid red;
+            padding: 10px; 
+        }
+        .plot-area-title {
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Vendor Data Dashboard</a>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 search-area">
+                <h3>Supply chain vulnerability analysis</h3>
+                <form method="post">
+                    <div class="form-group">
+                        <label for="vendor">Search Vendor</label>
+                        <input type="text" class="form-control" id="vendor" name="vendor" placeholder="Enter vendor name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="plot_type">Plot Type</label>
+                        <select class="form-control" id="plot_type" name="plot_type" required>
+                            <option value="Vulnerability">Vulnerability</option>
+                            <option value="Cloud">Cloud</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Generate Plots</button>
+                </form>
+                {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-8 plot-area">
+                <h3>Plot Area</h3>
+                {% if plot_urls %}
+                <div>
+                    {% for plot_url in plot_urls %}
+                    <img src="{{ url_for('static', filename=plot_url) }}" alt="Plot {{ loop.index }}">
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p>No plots to display.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

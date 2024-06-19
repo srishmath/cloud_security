@@ -3,20 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <title>Severity Predictor</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #e6f7ff; /* light blue color */
+        }
+        #prediction-result{
+            font-size: 24px; /* Adjust font size as needed */
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-    <h1>Severity Predictor</h1>
-    <form id="predictor-form">
-        <label for="short_description">Short Description:</label>
-        <input type="text" id="short_description" name="short_description"><br><br>
-        <label for="cwe">CWE:</label>
-        <input type="text" id="cwe" name="cwe" placeholder="CWE-89"><br><br>
-        <label for="vector">Vector:</label>
-        <input type="text" id="vector" name="vector"><br><br>
-        <button type="button" onclick="submitForm()">Predict Severity</button>
-    </form>
-    <p id="prediction-result"></p>
+    <div class="container mt-5">
+        <h1 class="mb-4">Severity Predictor</h1>
+        <form id="predictor-form">
+            <div class="form-group">
+                <label for="short_description">Short Description:</label>
+                <input type="text" class="form-control" id="short_description" name="short_description">
+            </div>
+            <div class="form-group">
+                <label for="cwe">CWE:</label>
+                <input type="text" class="form-control" id="cwe" name="cwe" placeholder="CWE-89">
+            </div>
+            <div class="form-group">
+                <label for="vector">Vector:</label>
+                <input type="text" class="form-control" id="vector" name="vector">
+            </div>
+            <button type="button" class="btn btn-primary" onclick="submitForm()">Predict Severity</button>
+        </form>
+        <p id="prediction-result"></p>
+        <p id="des"></p>
+        <p id="cwe-url"></p>
+        
+    </div>
 
+    <!-- JavaScript and Ajax Script -->
     <script>
         function submitForm() {
             const shortDescription = document.getElementById('short_description').value;
@@ -37,6 +60,19 @@
             .then(response => response.json())
             .then(data => {
                 document.getElementById('prediction-result').innerText = 'Prediction: ' + data.prediction;
+                
+                // Set description based on prediction
+                if (data.prediction === "MEDIUM") {
+                    document.getElementById("des").innerText = "The predicted severity of this attack is medium. Review and mitigate accordingly.";
+                } else if (data.prediction === "CRITICAL") {
+                    document.getElementById("des").innerText = "Critical severity predicted for this attack. Immediate action required to prevent significant damage.";
+                } else if (data.prediction === "HIGH") {
+                    document.getElementById("des").innerText = "High severity predicted. Take urgent action to prevent severe consequences and mitigate risks.";
+                }
+
+                // Display CWE URL with mitigation methods
+                const cweUrlElement = document.getElementById('cwe-url');
+                cweUrlElement.innerHTML = `<a href="${data.cwe_url}" target="_blank">CHECK THIS URL TO LEARN MITIGATION METHODS</a>`;
             })
             .catch(error => {
                 console.error('Error:', error);

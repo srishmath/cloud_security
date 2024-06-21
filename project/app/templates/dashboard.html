@@ -4,90 +4,96 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vendor Data Dashboard</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <style>
-        .navbar {
-            z-index: 1000; /* Increased z-index */
-            border: 2px solid green;
-            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Added box-shadow */
-        }
-        .container {
-            padding-top: 20px; /* Added padding to create space between navbar and content */
-        }
-        .search-area {
-            width: 200px;
-            border: 2px solid blue;
-            position: sticky;
-            top: 20px; 
-            z-index: 999; 
-            background-color: #ffffff; 
-            padding: 10px; 
-        }
-        .plot-area {
-            margin-top: 20px;
-            width: calc(100% - 4px); 
-            overflow-y: auto;
-            border: 2px solid red;
-            padding: 10px; 
-        }
-        .plot-area-title {
-            background-color: #f8f9fa;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #dee2e6;
-            border-radius: 5px;
-        }
-    </style>
+    <link rel="stylesheet" text="text/css" href="../static/dashboard.css">
 </head>
+
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Vendor Data Dashboard</a>
+    <nav class="navbar">
+        <label>Vendor Data Dashboard</label>
     </nav>
 
     <div class="container">
         <div class="row">
-            <div class="col-md-4 search-area">
-                <h3>Supply chain vulnerability analysis</h3>
+            <div class="search-area">
+                <div class="search-title">
+                    <h3>Supply chain vulnerability analysis</h3>
+                </div>
                 <form method="post">
-                    <div class="form-group">
-                        <label for="vendor">Search Vendor</label>
-                        <input type="text" class="form-control" id="vendor" name="vendor" placeholder="Enter vendor name" required>
+                    <div class="form-group1">
+                        <label for="vendor">Search Vendor</label><br>
+                        <input type="text" class="form-control" id="vendor" name="vendor" required oninput="getVendorSuggestions(this.value)" autocomplete="off">
+                        <div id="vendorSuggestions" class="suggestions"></div>
                     </div>
                     <div class="form-group">
-                        <label for="plot_type">Plot Type</label>
-                        <select class="form-control" id="plot_type" name="plot_type" required>
-                            <option value="Vulnerability">Vulnerability</option>
-                            <option value="Cloud">Cloud</option>
-                        </select>
+                        <label class="option">
+                            <input type="radio" name="plot_type" value="Vulnerability" required>
+                            <span>Vulnerability</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="plot_type" value="Cloud" required>
+                            <span>Cloud</span>
+                        </label>
                     </div>
-                    <button type="submit" class="btn btn-primary">Generate Plots</button>
+                    <div class="banner">
+                        <center><img src="../static/banner.jpg" alt=""></center>
+                    </div>
+                    <div class="div-btn">
+                        <button type="submit" class="btn btn-primary">Generate Plots</button>
+                    </div>
                 </form>
-                {% if error %}
-                <div class="alert alert-danger" role="alert">
-                    {{ error }}
-                </div>
-                {% endif %}
             </div>
-            <div class="col-md-8 plot-area">
-                <h3>Plot Area</h3>
-                {% if plot_urls %}
-                <div>
-                    {% for plot_url in plot_urls %}
-                    <img src="{{ url_for('static', filename=plot_url) }}" alt="Plot {{ loop.index }}">
-                    {% endfor %}
+            <div class="plot-area">
+                <div class="plot-area-title">
+                    <h3>Plot Area</h3>
                 </div>
-                {% else %}
-                <p>No plots to display.</p>
-                {% endif %}
+                <div class="plot-area-content">
+                    {% if plot_urls %}
+                        {% if plot_type == 'Vulnerability' %}
+                        <div class="row">
+                            <div class="column"><img src="{{ url_for('static', filename=plot_urls[0]) }}" alt="Vulnerability Plot 1"></div>
+                            <div class="column"><img src="{{ url_for('static', filename=plot_urls[2]) }}" alt="Vulnerability Plot 3"></div>
+                        </div>
+                        <div class="row">
+                            <div class="column"><img src="{{ url_for('static', filename=plot_urls[1]) }}" alt="Vulnerability Plot 2"></div>
+                            <div class="column"><img src="{{ url_for('static', filename=plot_urls[3]) }}" alt="Vulnerability Plot 4"></div>
+                        </div>
+                        {% elif plot_type == 'Cloud' %}
+                        <div class="row">
+                            <center><div class="full-width-image"><img src="{{ url_for('static', filename=plot_urls[0]) }}" alt="Severity of Vulnerabilities Across Cloud Components"></div></center>
+                        </div>
+                        <div class="row">
+                            {% for plot_url in plot_urls[1:] %}
+                                <div class="column"><img src="{{ url_for('static', filename=plot_url) }}" alt="Cloud Component Pie Chart {{ loop.index }}"></div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    {% else %}
+                        <p>No data available for the selected vendor and category.</p>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- <script>
+        function getVendorSuggestions(input) {
+            fetch(/vendors?q=${input})
+                .then(response => response.json())
+                .then(data => {
+                    const suggestionsDiv = document.getElementById('vendorSuggestions');
+                    suggestionsDiv.innerHTML = '';
+                    data.forEach(vendor => {
+                        const option = document.createElement('div');
+                        option.textContent = vendor;
+                        option.setAttribute('onclick', selectVendor('${vendor}'));
+                        suggestionsDiv.appendChild(option);
+                    });
+                });
+        }
+        
+        function selectVendor(vendor) {
+            document.getElementById('vendor').value = vendor;
+            document.getElementById('vendorSuggestions').innerHTML = '';
+        }
+    </script>           -->
 </body>
 </html>

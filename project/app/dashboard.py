@@ -1,5 +1,7 @@
 from flask import Flask, request, render_template, jsonify
 import pandas as pd
+import matplotlib
+matplotlib.use('Agg')  # Use non-interactive backend
 import matplotlib.pyplot as plt
 import io
 import os

@@ -8,45 +8,70 @@
         body {
             background-color: #e6f7ff;
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
+            margin: 20px; /* Add margin for spacing around the entire page */
+            padding: 20px; /* Add padding inside the border */
+            
         }
         h1 {
             text-align: center;
-            margin-top: 50px;
+            margin-top: 20;
+            margin-bottom: 50px;
+            color: black 
+            
+            
+        }
+        .content-box {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 70px;
+        }
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #555; /* Dark gray text */
+            margin-bottom: 10px; /* Space between paragraphs */
+            text-align: center;
+            
         }
         nav {
             background-color: #ffffff;
-            border-bottom: 2px solid #007bff; /* Blue border at the bottom */
+            border-bottom: 2px solid #007bff;
             padding: 10px 0;
+            text-align: center;
+            margin-top: 10px;
         }
         nav ul {
             list-style-type: none;
             margin: 0;
             padding: 0;
-            text-align: center;
         }
         nav ul li {
             display: inline;
-            margin: 0 10px;
+            margin: 0 15px;
         }
         nav ul li a {
             text-decoration: none;
-            color: #007bff; /* Blue color for links */
-            padding: 5px 10px;
-            border: 1px solid transparent; /* Transparent border initially */
+            color: #007bff;
+            padding: 8px 12px;
             border-radius: 5px;
-            transition: all 0.3s ease; /* Smooth transition */
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
         }
         nav ul li a:hover {
-            background-color: #007bff; /* Blue background on hover */
-            color: #ffffff; /* White text on hover */
-            border-color: #007bff; /* Blue border on hover */
+            background-color: #007bff;
+            color: #ffffff;
+            border-color: #007bff;
         }
     </style>
 </head>
 <body>
-    <h1>Welcome</h1>
+    <h1>SUPPLY CHAIN VULNERABILITIES MANAGEMENT</h1><br/>
+    <div class="content-box">
+        <p>Our dashboard facility will help you analyze potential risks based on historical trends associated with any third-party vendor you wish to associate with.</p>
+        <p>Severity Predictor helps you assess the severity of a known or plausible vulnerability and understand its mitigation.</p>
+    </div>
     <nav>
         <ul>
             <li><a href="/dashboard">Dashboard</a></li>

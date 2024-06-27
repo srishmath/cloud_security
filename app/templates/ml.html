@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Training and Evaluation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .plot-image {
+            margin-top: 10px;
+            text-align: center;
+        }
+        .plot-image img {
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Model Training and Evaluation</h1>
+        <div class="form-group">
+            <button onclick="trainModels()">Train Models</button>
+        </div>
+        <div class="result" id="result"></div>
+        <div class="plot-image" id="plot_image_accuracy"></div>
+        <div class="plot-image" id="plot_image_precision"></div>
+        <div class="plot-image" id="plot_image_recall"></div>
+        <div class="plot-image" id="plot_image_f1_score"></div>
+    </div>
+
+    <script>
+        function trainModels() {
+            fetch('/train', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({}),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display results
+                var resultDiv = document.getElementById("result");
+                var results = data.results;
+                var resultHTML = `
+                    <h3>Training and Evaluation Results:</h3>
+                `;
+                for (var model in results) {
+                    if (results.hasOwnProperty(model)) {
+                        resultHTML += `
+                            <p><strong>${model} Accuracy:</strong> ${results[model].accuracy.toFixed(4)}</p>
+                            <p><strong>${model} Precision:</strong> ${results[model].precision.toFixed(4)}</p>
+                            <p><strong>${model} Recall:</strong> ${results[model].recall.toFixed(4)}</p>
+                            <p><strong>${model} F1 Score:</strong> ${results[model].f1_score.toFixed(4)}</p>
+                            <br>
+                        `;
+                    }
+                }
+                resultDiv.innerHTML = resultHTML;
+
+                // Display plot images for each metric
+                var metrics = ['accuracy', 'precision', 'recall', 'f1_score'];
+                metrics.forEach(metric => {
+                    var plotImageDiv = document.getElementById(`plot_image_${metric}`);
+                    var imgHTML = `<img src="/static/plots/${metric}.png" alt="Comparative Analysis Plot for ${metric}">`;
+                    plotImageDiv.innerHTML = imgHTML;
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                var resultDiv = document.getElementById("result");
+                resultDiv.innerHTML = `<p>There was an error training the models. Please try again.</p>`;
+            });
+        }
+    </script>
+</body>
+</html>

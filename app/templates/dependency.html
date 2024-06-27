@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NPM Audit Visualizer</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="mb-4">NPM Audit Visualizer</h2>
+        <form method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <input type="file" name="file" class="form-control-file">
+            </div>
+            <button type="submit" class="btn btn-primary">Upload and Analyze</button>
+        </form>
+
+        {% if severity_img_base64 %}
+        <div class="mt-5">
+            <h3>Vulnerabilities by Severity</h3>
+            <img src="data:image/png;base64,{{ severity_img_base64 }}" class="img-fluid" alt="Vulnerabilities by Severity">
+        </div>
+        {% endif %}
+
+        {% if package_img_base64 %}
+        <div class="mt-5">
+            <h3>Top Packages by Vulnerabilities</h3>
+            <img src="data:image/png;base64,{{ package_img_base64 }}" class="img-fluid" alt="Top Packages by Vulnerabilities">
+        </div>
+        {% endif %}
+
+        {% if cwe_img_base64 %}
+        <div class="mt-5">
+            <h3>Vulnerabilities by CWE</h3>
+            <img src="data:image/png;base64,{{ cwe_img_base64 }}" class="img-fluid" alt="Vulnerabilities by CWE">
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Data Dashboard</title>
+    <link rel="stylesheet" text="text/css" href="../static/dashboard.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <label>Vendor Data Dashboard</label>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="search-area">
+                <div class="search-title">
+                    <h3>Supply chain vulnerability analysis</h3>
+                </div>
+                <form method="post">
+                    <div class="form-group1">
+                        <label for="vendor">Search Vendor</label><br>
+                        <input type="text" class="form-control" id="vendor" name="vendor" required oninput="getVendorSuggestions(this.value)" autocomplete="off">
+                        <div id="vendorSuggestions" class="suggestions"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="option">
+                            <input type="radio" name="plot_type" value="Vulnerability" required>
+                            <span>Vulnerability</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="plot_type" value="Cloud" required>
+                            <span>Cloud</span>
+                        </label>
+                    </div>
+                    <div class="banner">
+                        <center><img src="../static/banner.jpg" alt=""></center>
+                    </div>
+                    <div class="div-btn">
+                        <button type="submit" class="btn btn-primary">Generate Plots</button>
+                    </div>
+                </form>
+            </div>
+            <div class="plot-area">
+                <div class="plot-area-title">
+                    <h3>Plot Area</h3>
+                </div>
+                <div class="plot-area-content">
+                    {% if plot_urls %}
+                        {% if plot_type == 'Vulnerability' %}
+                        <div class="row">
+                            <div class="column"><img src="{{ url_for('static', filename=plot_urls[0]) }}" alt="Vulnerability Plot 1"></div>
+                            <div class="column"><img src="{{ url_for('static', filename=plot_urls[2]) }}" alt="Vulnerability Plot 3"></div>
+                        </div>
+                        <div class="row">
+                            <div class="column"><img src="{{ url_for('static', filename=plot_urls[1]) }}" alt="Vulnerability Plot 2"></div>
+                            <div class="column"><img src="{{ url_for('static', filename=plot_urls[3]) }}" alt="Vulnerability Plot 4"></div>
+                        </div>
+                        {% elif plot_type == 'Cloud' %}
+                        <div class="row">
+                            <center><div class="full-width-image"><img src="{{ url_for('static', filename=plot_urls[0]) }}" alt="Severity of Vulnerabilities Across Cloud Components"></div></center>
+                        </div>
+                        <div class="row">
+                            {% for plot_url in plot_urls[1:] %}
+                                <div class="column"><img src="{{ url_for('static', filename=plot_url) }}" alt="Cloud Component Pie Chart {{ loop.index }}"></div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    {% else %}
+                        <p>No data available for the selected vendor and category.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <script>
+        function getVendorSuggestions(input) {
+            fetch(/vendors?q=${input})
+                .then(response => response.json())
+                .then(data => {
+                    const suggestionsDiv = document.getElementById('vendorSuggestions');
+                    suggestionsDiv.innerHTML = '';
+                    data.forEach(vendor => {
+                        const option = document.createElement('div');
+                        option.textContent = vendor;
+                        option.setAttribute('onclick', selectVendor('${vendor}'));
+                        suggestionsDiv.appendChild(option);
+                    });
+                });
+        }
+        
+        function selectVendor(vendor) {
+            document.getElementById('vendor').value = vendor;
+            document.getElementById('vendorSuggestions').innerHTML = '';
+        }
+    </script>           -->
+</body>
+</html>
